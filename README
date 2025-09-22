@@ -1,0 +1,42 @@
+# Finetune-LLM
+
+This repository contains my submission for the coding test on fine-tuning large language models (LLMs) for disease diagnosis generation. The main focus is on working with the Qwen2.5/Qwen3 models and exploring efficient fine-tuning approaches such as LoRA.
+
+---
+
+## Contents
+
+- `Finetune_Task1&2.py`: Data loading, baseline experiment, and initial attempts at running inference.
+- `report.pdf`: Technical report summarizing design, methods, partial results, and challenges.
+- `README.md`: This file.
+
+---
+
+## Approach
+
+- **Task 1 (Baseline)**:  
+  Loaded the provided dataset (1237 rows, with input findings and output diseases).  
+  Ran preprocessing and a baseline model (Qwen) to see how it performs out-of-the-box.
+
+- **Task 2 (Fine-tuning)**:  
+  Set up LoRA fine-tuning on Qwen3 4B/7B.  
+  Due to GPU limits (Colab), I was only able to run partial training experiments.  
+  The notebooks include the setup for LoRA + quantization (4bit).  
+  Even though I couldn’t run full training cycles, I documented the setup and errors encountered.
+
+---
+
+## Results
+
+- Some baseline generations were successful, but fine-tuning was limited by GPU constraints.  
+- The report (PDF) includes discussion of where training failed to complete and why (e.g., Colab GPU limits).  
+- To stay honest: This repo is more about demonstrating the setup process and understanding, rather than showing fully converged results.
+
+---
+
+## How to Run
+
+1. Clone this repo:
+   ```bash
+   git clone https://github.com/Jimmuji/Finetune-LLM.git
+   cd Finetune-LLM
