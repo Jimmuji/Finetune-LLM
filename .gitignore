@@ -1,0 +1,12 @@
+.DS_Store
+__pycache__/
+*.pyc
+*.pyo
+node_modules/
+package.json
+package-lock.json
+results/make_report.js
+results/~$*
+FinetuneLLM-NLP-Quiz 2/
+*.xlsx~
+.ipynb_checkpoints/
