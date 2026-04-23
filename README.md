@@ -6,13 +6,10 @@ Fine-tuning Qwen3 for structured disease label extraction from free-text radiolo
 
 | Task | Method | Model | F1 |
 |------|--------|-------|----|
-| Baseline | Vocabulary-constrained few-shot prompt | Qwen3-4B | TBD |
-| Baseline | Vocabulary-constrained few-shot prompt | Qwen3-8B | TBD |
-| Fine-tuned | QLoRA (r=16) via Unsloth | Qwen3-4B | TBD |
+| Baseline | Vocabulary-constrained few-shot prompt | Qwen3-4B | 0.4340 |
+| Fine-tuned | QLoRA (r=16) via Unsloth | Qwen3-4B | 0.6734 |
 
-*(Results will be filled after training runs)*
-
-**Fine-tuned model:** [HuggingFace link TBD]
+**Fine-tuned model:** [huggingface.co/Jimmu1215/Qwen3-4B-disease-diagnosis](https://huggingface.co/Jimmu1215/Qwen3-4B-disease-diagnosis)
 
 ---
 
@@ -22,7 +19,7 @@ Fine-tuning Qwen3 for structured disease label extraction from free-text radiolo
 - **Split:** 1,000 train / 236 test (seed=42)
 - **Input:** Free-text CT/MRI radiology findings (`input_finding`)
 - **Output:** Comma-separated disease labels (`output_disease`)
-- **Vocabulary:** 84 unique disease labels (see `src/metrics.py`)
+- **Vocabulary:** 84 unique disease labels enumerated from the dataset
 - **Avg labels/sample:** 2.28
 
 ---
@@ -37,8 +34,9 @@ Finetune-LLM/
 ├── src/
 │   └── metrics.py             # Entity-level F1, Jaccard, Exact Match
 ├── results/
-│   ├── task1_inference_results.xlsx
-│   └── task2_inference_results.xlsx
+│   ├── Technical_Report.docx
+│   ├── task1_Qwen3-4B_results.xlsx
+│   └── task2_finetuned_results.xlsx
 ├── requirements.txt
 └── README.md
 ```
@@ -66,20 +64,20 @@ pip install -r requirements.txt
 
 1. Upload `notebooks/task1_baseline.py` and `train-test-data.xlsx` to Colab
 2. Run all sections top to bottom
-3. Results saved to `results/task1_inference_results.xlsx`
+3. Results saved to `results/task1_Qwen3-4B_results.xlsx`
 
 Key prompt design choices:
-- **Vocabulary list:** All 84 disease labels included in system prompt — prevents hallucination
+- **Vocabulary list:** All 84 disease labels included in system prompt — prevents label name mismatch
 - **Few-shot examples:** 3 examples (1, 2, and 3-label cases) anchor the output format
-- **Thinking disabled:** `enable_thinking=False` gives faster, deterministic output
+- **Thinking disabled:** `enable_thinking=False` gives faster, more consistent output
 - **Post-processing:** Model output snapped to canonical vocabulary labels
 
 ### Task 2 — QLoRA Fine-Tuning
 
 1. Upload `notebooks/task2_finetune.py` and `train-test-data.xlsx` to Colab
 2. Set `HF_REPO_ID` to your HuggingFace repo name at the top of the file
-3. Run all sections; training takes ~30 min on T4 for Qwen3-4B
-4. Results saved to `results/task2_inference_results.xlsx`
+3. Run all sections; training takes ~31 min on T4 for Qwen3-4B
+4. Results saved to `results/task2_finetuned_results.xlsx`
 
 Fine-tuning configuration:
 | Parameter | Value |
@@ -94,6 +92,7 @@ Fine-tuning configuration:
 | Learning rate | 2e-4 (cosine decay) |
 | Epochs | 3 |
 | Max seq length | 1024 tokens |
+| Training time | ~31 min on NVIDIA T4 |
 
 ---
 
@@ -117,6 +116,15 @@ from src.metrics import evaluate, print_metrics
 metrics = evaluate(predictions=["Renal cyst, Kidney stone"], gold_labels=["Renal cyst"])
 print_metrics(metrics)
 ```
+
+---
+
+## Results
+
+| Model | Setting | Precision | Recall | F1 | Jaccard | Exact Match |
+|-------|---------|-----------|--------|----|---------|-------------|
+| Qwen3-4B | Zero-shot | 0.4202 | 0.4931 | 0.4340 | 0.3356 | 0.0932 |
+| Qwen3-4B | Fine-tuned (QLoRA) | — | — | 0.6734 | — | — |
 
 ---
 
